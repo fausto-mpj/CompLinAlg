@@ -31,8 +31,9 @@ begin
 	using PlutoUI
 	using Random
 	using Statistics
+	using StatsPlots
 
-	theme(:dracula)
+	#theme(:dracula)
 end
 
 # ╔═╡ 9cc6c98b-779b-4e38-949c-f9611f28a492
@@ -50,6 +51,20 @@ begin
 	onde temos que ``\kappa_{p}(A) = \Vert A^{-1} \Vert_{p} \cdot \Vert A \Vert_{p}``, com ``\varepsilon_{A} = \frac{\Vert E \Vert_{p}}{\Vert A \Vert_{p}}`` e ``\varepsilon_{y} = \frac{\Vert f \Vert_{p}}{\Vert y \Vert_{p}}``.
 	"""
 end
+
+# ╔═╡ 3da4dbfc-3e8a-4e93-9d1e-95ec42436cb4
+md"""
+$(@bind p Slider(1:10; default = 2))
+"""
+
+# ╔═╡ 371adbd0-92b7-4eb4-bfe4-22cd078b0675
+md"""
+
+Como o teorema acima dá liberdade quanto à norma ``p``, então primeiro vamos estabelecer o valor de ``p`` no *slider* abaixo.
+
+Valor de ``p``: $p
+
+"""
 
 # ╔═╡ 553436b7-50c0-45e8-b1ea-487a45918280
 begin
@@ -174,7 +189,7 @@ end
 # ╔═╡ 12ffb3e1-2ef5-49c8-9221-33d3c7e60f5c
 if escolha == "Delta"
 	md"""	
-	$(@bind δ₁ Slider(-n:0.000001:n; default = 0.0))
+	$(@bind δ₁ Slider(-0.0001:0.000001:-0.0001; default = 0.0))
 	"""
 else
 	δ₁ = rand(X)
@@ -235,6 +250,67 @@ begin
 	elseif escolha == "Uniform"
 		plot(x -> pdf(X, x), color = colorant"royalblue1", fill = (0, colorant"royalblue1"), xlims = (minx, maxx), legend = false, xguide = "x", yguide = "fdp(x)")
 	end
+end
+
+# ╔═╡ 1e89df44-8402-4bea-be6f-02590726f094
+md"""
+Modo *hardcore*: $(@bind hardcore CheckBox(default = false))
+
+"""
+
+# ╔═╡ 572bb523-fe89-497f-b01b-bf7cd6bc8ee8
+if hardcore == true && escolha == "Delta"
+	md"""
+	$(@bind δ₁₁ Slider(-n:0.000001:n; default = 0.0))
+
+	$(@bind δ₁₂ Slider(-n:0.000001:n; default = 0.0))
+
+	$(@bind δ₁₃ Slider(-n:0.000001:n; default = 0.0))
+
+	
+	\
+
+	
+	$(@bind δ₁₄ Slider(-n:0.000001:n; default = 0.0))
+
+	$(@bind δ₁₅ Slider(-n:0.000001:n; default = 0.0))
+
+	$(@bind δ₁₆ Slider(-n:0.000001:n; default = 0.0))
+
+	
+	\
+
+	
+	$(@bind δ₁₇ Slider(-n:0.000001:n; default = 0.0))
+
+	$(@bind δ₁₈ Slider(-n:0.000001:n; default = 0.0))
+
+	$(@bind δ₁₉ Slider(-n:0.000001:n; default = 0.0))
+	
+	"""
+elseif hardcore == true && escolha ≠ "Delta"
+	δ₁₁ = rand(X)
+	δ₁₂ = rand(X)
+	δ₁₃ = rand(X)
+	δ₁₄ = rand(X)
+	δ₁₅ = rand(X)
+	δ₁₆ = rand(X)
+	δ₁₇ = rand(X)
+	δ₁₈ = rand(X)
+	δ₁₉ = rand(X)
+	nothing
+end
+
+# ╔═╡ f3ba7ffa-46c9-4f00-a52f-ee736c76ebb9
+if hardcore == true && escolha == "Delta"
+	md"""
+	Valor de ``\delta_{1}`` = $(δ₁₁) ``\quad\quad\quad`` Valor de ``\delta_{2}`` = $(δ₁₂) ``\quad\quad\quad`` Valor de ``\delta_{3}`` = $(δ₁₃)
+		
+	Valor de ``\delta_{4}`` = $(δ₁₄) ``\quad\quad\quad`` Valor de ``\delta_{5}`` = $(δ₁₅) ``\quad\quad\quad`` Valor de ``\delta_{6}`` = $(δ₁₆)
+		
+	Valor de ``\delta_{7}`` = $(δ₁₇) ``\quad\quad\quad`` Valor de ``\delta_{8}`` = $(δ₁₈) ``\quad\quad\quad`` Valor de ``\delta_{9}`` = $(δ₁₉)
+	
+	"""
 end
 
 # ╔═╡ f0058192-26ec-440f-bf6d-1b16e83fbaa3
@@ -417,10 +493,6 @@ md"""
 
 """
 
-# ╔═╡ 6c9ee07e-fb5e-48d5-8a3a-1c52f1a3ef6f
-# E como fazer a distorção?
-plot(cos, sin, 0, 2π, line = 4, leg = false, color = colorant"royalblue1", fill = (0, colorant"royalblue1"), dpi = 300, aspect_ratio = :equal)
-
 # ╔═╡ 71311caa-e62e-46ba-9997-353f0cef5129
 if tipo == "2"
 	md"""
@@ -461,6 +533,12 @@ const malha = range(-10.0, stop = 10.0, length = 200)
 # ╔═╡ 08a4f848-c78c-4599-8a41-331c7f7f28f3
 const mini_malha = range(-1.0, stop = 1.0, length = 200)
 
+# ╔═╡ ae6deae3-62bf-438b-9d8f-b82066b99753
+const malhaₜ =  range(0.0, stop = 2π, length = 100)
+
+# ╔═╡ d2e3d403-7761-4729-a790-50a44d909ee2
+const malhaᵩ = range(0.0, stop = π, length = 100)
+
 # ╔═╡ 474c6c47-d85d-4d4a-bdda-24b6e7cb4f09
 D = Uniform(-n, n)
 
@@ -483,6 +561,11 @@ end
 # ╔═╡ bd1b9af8-f4b3-4570-8f8b-cb21af18e7d8
 function εᵦ(b::Vector, f::Vector, p::Int64 = 2)
 	norm(f, p) / norm(b, p)
+end
+
+# ╔═╡ 1457b0a0-1dcf-4da6-b7ad-bb34e75b9d7d
+function εᵣ(A::Matrix, b::Vector, E::Matrix, f::Vector, p::Int64 = 2)
+	norm((A+E) \ (b+f), p) / norm(A \ b, p)
 end
 
 # ╔═╡ 0fa044a7-a960-4ec6-a474-3d2386f2b26c
@@ -519,15 +602,25 @@ begin
 end
 
 # ╔═╡ 3954f059-049c-4488-9e6d-46f867263b50
-function gerar_matriz_A(semente::Int64, n::Int64, D::Uniform{Float64})
-	Random.seed!(semente)
-	A = rand(D, (n,n))
-	A⁻¹ = try
-		inv(A)
-	catch
-		return(gerar_matriz_A(semente+abs(rand(Int64)), n, D))
+function gerar_matriz_A(semente::Int64, n::Int64, D::Uniform{Float64}, M = nothing)
+	if isnothing(M)
+		Random.seed!(semente)
+		A = rand(D, (n,n))
+		A⁻¹ = try
+			inv(A)
+		catch
+			return(gerar_matriz_A(semente+abs(rand(Int64)), n, D))
+		end
+		return(Matriz = A, Inversa = A⁻¹)
+	else
+		A⁻¹ = try
+			inv(M)
+		catch
+			@warn "Matriz fornecida é singular! Gerando outra a partir da semente."
+			return(gerar_matriz_A(semente+abs(rand(Int64)), n, D))
+		end
+		return(Matriz = M, Inversa = A⁻¹)
 	end
-	return(Matriz = A, Inversa = A⁻¹)
 end
 
 # ╔═╡ 8e95a16d-0316-48c7-88c2-47b704d2da2a
@@ -562,22 +655,36 @@ end
 
 # ╔═╡ 373c654a-2235-4e60-8829-e5a71c195235
 begin
-	if exemplo == "No talento"
+	if exemplo == "No talento" && hardcore == true
 		A, A⁻¹ = gerar_matriz_A(semente, parse(Int64, tipo), D)
+		#A, A⁻¹ = [1.0 2.0; 0.0 2.0], inv([1.0 2.0; 0.0 2.0])
+		#A, A⁻¹ = [1.0 2.0 3.0; 0.0 2.0 1.0], inv([1.0 2.0 3.0; 0.0 2.0 1.0])
 		y = gerar_vetor_y(semente, parse(Int64, tipo), D)
 		E = gerar_matriz_E(semente, parse(Int64, tipo))
+		#E = [δ₁₁  δ₁₂; δ₁₃ δ₁₄]
+		#E = [δ₁₁  δ₁₂ δ₁₃; δ₁₄ δ₁₅ δ₁₆; δ₁₇ δ₁₈ δ₁₉]
+		C = A + E
+		f = gerar_vetor_f(semente, parse(Int64, tipo))
+	elseif exemplo == "No talento" && hardcore ≠ true
+		A, A⁻¹ = gerar_matriz_A(semente, parse(Int64, tipo), D)
+		#A, A⁻¹ = [1.0 2.0; 0.0 2.0], inv([1.0 2.0; 0.0 2.0])
+		#A, A⁻¹ = [1.0 2.0 3.0; 0.0 2.0 1.0], inv([1.0 2.0 3.0; 0.0 2.0 1.0])
+		y = gerar_vetor_y(semente, parse(Int64, tipo), D)
+		E = gerar_matriz_E(semente, parse(Int64, tipo))
+		#E = [δ₁  0; 0 0]
+		#E = [δ₁ 0 0; 0 0 0; 0 0 0]
 		C = A + E
 		f = gerar_vetor_f(semente, parse(Int64, tipo))
 	elseif tipo == "2"
-		A = 𝒜₂ₓ₂[idx]
-		A⁻¹ = inv(A)
+		A = 𝒜₂ₓ₂[idx].Matriz
+		A⁻¹ = 𝒜₂ₓ₂[idx].Inversa
 		y = gerar_vetor_y(semente, parse(Int64, tipo), D)
 		E = gerar_matriz_E(semente, parse(Int64, tipo))
 		C = A + E
 		f = gerar_vetor_f(semente, parse(Int64, tipo))
 	elseif tipo == "3"
-		A = 𝒜₃ₓ₃[idx]
-		A⁻¹ = inv(A)
+		A = 𝒜₃ₓ₃[idx].Matriz
+		A⁻¹ = 𝒜₃ₓ₃[idx].Inversa
 		y = gerar_vetor_y(semente, parse(Int64, tipo), D)
 		E = gerar_matriz_E(semente, parse(Int64, tipo))
 		C = A + E
@@ -591,7 +698,7 @@ latexify(A)
 
 # ╔═╡ 4117fc01-cd79-437d-9ee0-72f434ae8a5c
 md"""
-tem norma $(norm(A)). A sua inversa é dada por
+tem norma $(norm(A), p). A sua inversa é dada por
 """
 
 # ╔═╡ 76070ba3-a40b-4be6-807e-4d4932783bad
@@ -599,7 +706,7 @@ latexify(A⁻¹)
 
 # ╔═╡ 7cd8489e-9e40-49c8-ad88-a08932c75f1e
 md"""
-com norma $(norm(A⁻¹)). Logo, o valor de ``\kappa(A)`` é $(norm(A) * norm(A⁻¹)).
+com norma $(norm(A⁻¹, p)). Logo, o valor de ``\kappa(A)`` é $(norm(A, p) * norm(A⁻¹, p)).
 """
 
 # ╔═╡ 31b4697a-3f5c-4e5d-9e57-9c7a2e92f759
@@ -607,7 +714,7 @@ latexify(C)
 
 # ╔═╡ 68b94ca4-2ed1-4881-8873-4c28b278da90
 md"""
-tem norma $(norm(C)) e inversa dada por
+tem norma $(norm(C, p)) e inversa dada por
 """
 
 # ╔═╡ 32e726b8-2c66-47c8-9a85-7c7b9acd06d4
@@ -615,7 +722,7 @@ latexify(inv(C))
 
 # ╔═╡ 91d8d9dc-a2b8-43ac-9333-459e0d2ead08
 md"""
-com norma $(norm(inv(C))).
+com norma $(norm(inv(C), p)).
 """
 
 # ╔═╡ 84e75013-9b15-4ec7-adaa-65068f91e6dc
@@ -624,8 +731,22 @@ latexify(A \ y)
 # ╔═╡ 0768a5a9-4bba-4346-9e67-4f4e2f317d32
 latexify(C \ (y + f))
 
-# ╔═╡ c687cf22-274e-4573-9246-e1a7fe335677
-teste(A, E, y, f)
+# ╔═╡ 955a66a1-dbe2-4b12-b97f-6c81819c3b43
+begin
+	resultado = teste(A, E, y, f)
+	resposta_1 = resultado.Premissa ? "é verdadeira" : "é falsa"
+	resposta_2 = resultado.Conclusão ? "é verdadeira" : "é falsa"
+	md""" 
+	A premissa $(resposta_1), pois temos que $(norm(inv(A), p) * norm(E, p)) é maior que ``\frac{1}{2}``.
+
+	O ``\varepsilon_{A}`` ficou em $(resultado.Erro_E), ao passo que ``\varepsilon_{y}`` ficou em $(resultado.Erro_f).
+
+	Assim, temos que a conclusão $(resposta_2).
+	""" 
+end
+
+# ╔═╡ 3cd2900d-47a0-42d3-86a3-4a3dacd13c66
+εᵣ(A, y, E, f)
 
 # ╔═╡ 118a1be6-b452-4c58-8526-1f5e191bfb18
 begin
@@ -693,6 +814,39 @@ begin
 		plot!([0,(C * [0,1,0])[1]],[0,(C * [0,1,0])[2]], [0,(C * [0,1,0])[3]], linestyle = :dashdot, arrow = true, color= colorant"darkviolet", linewidth = 2, label = "")
 		plot!([0,(C * [0,0,1])[1]],[0,(C * [0,0,1])[2]], [0,(C * [0,0,1])[3]], linestyle = :dashdot, arrow = true, color= colorant"darkviolet", linewidth = 2, label = "")
 	end
+end
+
+# ╔═╡ 4c3fce68-cad4-4a52-8e21-f671742e1659
+Aₓ₂ₜ(t) = A * [cos(t); sin(t)]
+
+# ╔═╡ ad8113d2-206a-4e08-95f0-087f2459eff4
+Aₓ₃ₜ(θ, ϕ) = A * [cos(θ) * sin(ϕ); sin(θ) * sin(ϕ); cos(ϕ)]
+
+# ╔═╡ 220c7295-ef8f-4134-b862-16683380b7dc
+x₂ₜ(t) = Aₓ₂ₜ(t)[1]
+
+# ╔═╡ 87cf20bd-fa9f-495a-84b5-db158fc1b934
+y₂ₜ(t) = Aₓ₂ₜ(t)[2]
+
+# ╔═╡ 3ed32a02-76d4-41e6-972f-cf0a30998415
+if tipo == "2"
+	plot(x₂ₜ, y₂ₜ, 0, 2π, line = 4, leg = false, color = colorant"royalblue1", fill = (0, colorant"royalblue1"), dpi = 300, aspect_ratio = :equal)
+elseif tipo == "3"
+	surface([Aₓ₃ₜ(θ, ϕ)[1] for θ ∈ malhaₜ, ϕ ∈ malhaᵩ], [Aₓ₃ₜ(θ, ϕ)[2] for θ ∈ malhaₜ, ϕ ∈ malhaᵩ], [Aₓ₃ₜ(θ, ϕ)[3] for θ ∈ malhaₜ, ϕ ∈ malhaᵩ], dpi = 300)
+end
+
+# ╔═╡ aa58b4d1-3c61-46d6-bfd5-816ea278880d
+begin 
+	XX(θ, ϕ) = cos(θ) * sin(ϕ)
+	YY(θ, ϕ) = sin(θ) * sin(ϕ)
+	ZZ(θ, ϕ) = cos(ϕ)
+end
+
+# ╔═╡ 6c9ee07e-fb5e-48d5-8a3a-1c52f1a3ef6f
+if tipo == "2"
+	plot(cos, sin, 0, 2π, line = 4, leg = false, color = colorant"royalblue1", fill = (0, colorant"royalblue1"), dpi = 300, aspect_ratio = :equal)
+elseif tipo == "3"
+	surface([XX(θ, ϕ) for θ ∈ malhaₜ, ϕ ∈ malhaᵩ], [YY(θ, ϕ) for θ ∈ malhaₜ, ϕ ∈ malhaᵩ], [ZZ(θ, ϕ) for θ ∈ malhaₜ, ϕ ∈ malhaᵩ], dpi = 300)
 end
 
 # ╔═╡ d306b8cb-dcb5-4e28-a8a4-71e4ad3cd2f2
@@ -957,6 +1111,20 @@ if tipo == "2"
 	warp(image, LinearMap(C))
 end
 
+# ╔═╡ 0005f781-71c4-4ece-a389-4bee95e519e2
+# Fazer matriz triangular
+# 3 triangulares
+# Achar matrizes com κ(A) grande e bem pequeno
+
+# ╔═╡ ee71e55b-74a1-405e-9879-d571c57251d2
+push!(𝒜₂ₓ₂, [1 2; 0 2])
+
+# ╔═╡ 40466ea0-29ab-44db-820d-0046c2ca5be4
+push!(𝒜₃ₓ₃, [1 0 2;-1 1 0; 0 0 -2])
+
+# ╔═╡ 7fe71e38-2cea-4738-83c7-422fbbdea3fc
+push!(𝒜₂ₓ₂, [4.38938847 0.44964575; 9.46649537 1.16076851])
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -975,6 +1143,7 @@ Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
 
 [compat]
 Colors = "~0.12.8"
@@ -989,6 +1158,7 @@ Latexify = "~0.15.16"
 PlotThemes = "~3.0.0"
 Plots = "~1.31.7"
 PlutoUI = "~0.7.39"
+StatsPlots = "~0.15.2"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -997,7 +1167,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.0"
 manifest_format = "2.0"
-project_hash = "63d4e9568c98357f0a0355d8b8cc79949b172b04"
+project_hash = "216913e16994bc333ef550d2acfc12789ecc13da"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -1026,6 +1196,18 @@ deps = ["LinearAlgebra", "Random", "StaticArrays"]
 git-tree-sha1 = "62e51b39331de8911e4a7ff6f5aaf38a5f4cc0ae"
 uuid = "ec485272-7323-5ecc-a04f-4719b315124d"
 version = "0.2.0"
+
+[[deps.Arpack]]
+deps = ["Arpack_jll", "Libdl", "LinearAlgebra", "Logging"]
+git-tree-sha1 = "91ca22c4b8437da89b030f08d71db55a379ce958"
+uuid = "7d9fca2a-8960-54d3-9f78-7d1dccf2cb97"
+version = "0.5.3"
+
+[[deps.Arpack_jll]]
+deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "OpenBLAS_jll", "Pkg"]
+git-tree-sha1 = "5ba6c757e8feccf03a1554dfaf3e26b3cfc7fd5e"
+uuid = "68821587-b530-5797-8361-c406ea357684"
+version = "3.5.1+1"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -1169,6 +1351,12 @@ version = "0.18.13"
 git-tree-sha1 = "bfc1187b79289637fa0ef6d4436ebdfe6905cbd6"
 uuid = "e2d170a0-9d28-54be-80f0-106bbe20a464"
 version = "1.0.0"
+
+[[deps.DataValues]]
+deps = ["DataValueInterfaces", "Dates"]
+git-tree-sha1 = "d88a19299eba280a6d062e135a43f00323ae70bf"
+uuid = "e7dc6d0d-1eca-5fa6-8ad6-5aecde8b7ea5"
+version = "0.4.13"
 
 [[deps.Dates]]
 deps = ["Printf"]
@@ -1624,6 +1812,12 @@ git-tree-sha1 = "b53380851c6e6664204efb2e62cd24fa5c47e4ba"
 uuid = "aacddb02-875f-59d6-b918-886e6ef4fbf8"
 version = "2.1.2+0"
 
+[[deps.KernelDensity]]
+deps = ["Distributions", "DocStringExtensions", "FFTW", "Interpolations", "StatsBase"]
+git-tree-sha1 = "9816b296736292a80b9a3200eb7fbb57aaa3917a"
+uuid = "5ab0869b-81aa-558d-bb23-cbf5423bbe9b"
+version = "0.6.5"
+
 [[deps.LAME_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "f6250b16881adf048549549fba48b1161acdac8c"
@@ -1813,6 +2007,12 @@ version = "0.3.3"
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
 version = "2022.2.1"
 
+[[deps.MultivariateStats]]
+deps = ["Arpack", "LinearAlgebra", "SparseArrays", "Statistics", "StatsAPI", "StatsBase"]
+git-tree-sha1 = "efe9c8ecab7a6311d4b91568bd6c88897822fabe"
+uuid = "6f286f6a-111f-5878-ab1e-185364afe411"
+version = "0.10.0"
+
 [[deps.NaNMath]]
 deps = ["OpenLibm_jll"]
 git-tree-sha1 = "a7c3d1da1189a1c2fe843a3bfa04d18d20eb3211"
@@ -1834,6 +2034,11 @@ version = "1.0.2"
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
 version = "1.2.0"
+
+[[deps.Observables]]
+git-tree-sha1 = "dfd8d34871bc3ad08cd16026c1828e271d554db9"
+uuid = "510215fc-4207-5dde-b226-833fc4488ee2"
+version = "0.5.1"
 
 [[deps.OffsetArrays]]
 deps = ["Adapt"]
@@ -2102,6 +2307,12 @@ git-tree-sha1 = "f94f779c94e58bf9ea243e77a37e16d9de9126bd"
 uuid = "6c6a2e73-6563-6170-7368-637461726353"
 version = "1.1.1"
 
+[[deps.SentinelArrays]]
+deps = ["Dates", "Random"]
+git-tree-sha1 = "db8481cf5d6278a121184809e9eb1628943c7704"
+uuid = "91c51154-3ec4-41a3-a24f-3f23e20d615c"
+version = "1.3.13"
+
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 
@@ -2196,6 +2407,12 @@ git-tree-sha1 = "5783b877201a82fc0014cbf381e7e6eb130473a4"
 uuid = "4c63d2b9-4356-54db-8cca-17b64c39e42c"
 version = "1.0.1"
 
+[[deps.StatsPlots]]
+deps = ["AbstractFFTs", "Clustering", "DataStructures", "DataValues", "Distributions", "Interpolations", "KernelDensity", "LinearAlgebra", "MultivariateStats", "NaNMath", "Observables", "Plots", "RecipesBase", "RecipesPipeline", "Reexport", "StatsBase", "TableOperations", "Tables", "Widgets"]
+git-tree-sha1 = "83dc2ed179209a667d162683a27b4125f2dd3ebb"
+uuid = "f3b207a7-027a-5e70-b257-86293d7955fd"
+version = "0.15.2"
+
 [[deps.StructArrays]]
 deps = ["Adapt", "DataAPI", "StaticArraysCore", "Tables"]
 git-tree-sha1 = "8c6ac65ec9ab781af05b08ff305ddc727c25f680"
@@ -2210,6 +2427,12 @@ uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 version = "1.0.0"
+
+[[deps.TableOperations]]
+deps = ["SentinelArrays", "Tables", "Test"]
+git-tree-sha1 = "e383c87cf2a1dc41fa30c093b2a19877c83e1bc1"
+uuid = "ab02a1b2-a7df-11e8-156e-fb1833f50b87"
+version = "1.2.0"
 
 [[deps.TableTraits]]
 deps = ["IteratorInterfaceExtensions"]
@@ -2300,6 +2523,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "4528479aa01ee1b3b4cd0e6faef0e04cf16466da"
 uuid = "2381bf8a-dfd0-557d-9999-79630e7b1b91"
 version = "1.25.0+0"
+
+[[deps.Widgets]]
+deps = ["Colors", "Dates", "Observables", "OrderedCollections"]
+git-tree-sha1 = "fcdae142c1cfc7d89de2d11e08721d0f2f86c98a"
+uuid = "cc8bc4a8-27d6-5769-a93b-9d913e69aa62"
+version = "0.6.6"
 
 [[deps.WoodburyMatrices]]
 deps = ["LinearAlgebra", "SparseArrays"]
@@ -2529,6 +2758,8 @@ version = "1.4.1+0"
 # ╔═╡ Cell order:
 # ╟─9cc6c98b-779b-4e38-949c-f9611f28a492
 # ╟─a38f8407-ffe5-429b-9887-a30644f5e5e6
+# ╟─371adbd0-92b7-4eb4-bfe4-22cd078b0675
+# ╟─3da4dbfc-3e8a-4e93-9d1e-95ec42436cb4
 # ╟─553436b7-50c0-45e8-b1ea-487a45918280
 # ╟─aee6a535-20f9-4613-8ee3-3126fa4a7e51
 # ╟─b878b112-3d13-4afd-9036-b2781c04c0c4
@@ -2544,6 +2775,9 @@ version = "1.4.1+0"
 # ╟─e5509f77-e883-4b9c-92d6-1f23531cdf7e
 # ╟─d1a65696-d985-4c80-affe-b40b5038d689
 # ╟─7bdc1d2b-3660-4a95-98ab-baee8c45e3f7
+# ╟─1e89df44-8402-4bea-be6f-02590726f094
+# ╟─572bb523-fe89-497f-b01b-bf7cd6bc8ee8
+# ╟─f3ba7ffa-46c9-4f00-a52f-ee736c76ebb9
 # ╟─1723cb94-baf6-4f5b-8bfd-6efd1cbfe8f8
 # ╟─f0058192-26ec-440f-bf6d-1b16e83fbaa3
 # ╟─27728717-433c-41e6-b6ba-b7764b2a8a78
@@ -2553,7 +2787,7 @@ version = "1.4.1+0"
 # ╟─90ce7acb-c505-4446-a4b7-2e0b2ec97fcc
 # ╟─7f40d9c7-24af-444b-bb52-cb949e1e6469
 # ╟─17a36546-fdfa-4c30-b7c3-bdfca12b535f
-# ╟─373c654a-2235-4e60-8829-e5a71c195235
+# ╠═373c654a-2235-4e60-8829-e5a71c195235
 # ╟─11ad4cb3-2283-4841-b3cf-5cf3a09b021e
 # ╟─1df4c1a9-82c8-472f-bcb6-411647ddd5a7
 # ╟─4117fc01-cd79-437d-9ee0-72f434ae8a5c
@@ -2570,7 +2804,8 @@ version = "1.4.1+0"
 # ╟─84e75013-9b15-4ec7-adaa-65068f91e6dc
 # ╟─e7065240-5ad1-4bde-b314-174c507d2bce
 # ╟─0768a5a9-4bba-4346-9e67-4f4e2f317d32
-# ╟─c687cf22-274e-4573-9246-e1a7fe335677
+# ╟─955a66a1-dbe2-4b12-b97f-6c81819c3b43
+# ╟─3cd2900d-47a0-42d3-86a3-4a3dacd13c66
 # ╟─550ed7aa-8117-4d22-b9e7-c0e7ece53307
 # ╟─8603ae6e-41e5-4eb8-b98d-754ad6ff7e0c
 # ╟─c4819792-615a-4a56-acb1-a3ffd4392558
@@ -2589,7 +2824,8 @@ version = "1.4.1+0"
 # ╟─fbb7f2bf-39a5-417c-9c2e-5f1f50867ce0
 # ╟─ea60c1c8-44c1-4839-9326-9473668c4e5a
 # ╟─4fd2f8ad-1c73-4847-99dd-650eb835771f
-# ╠═6c9ee07e-fb5e-48d5-8a3a-1c52f1a3ef6f
+# ╟─6c9ee07e-fb5e-48d5-8a3a-1c52f1a3ef6f
+# ╟─3ed32a02-76d4-41e6-972f-cf0a30998415
 # ╟─71311caa-e62e-46ba-9997-353f0cef5129
 # ╟─2b888dd6-2b82-4551-af00-04293818acd9
 # ╟─e79eb636-b10e-4d06-8492-e2f3a7d52976
@@ -2599,12 +2835,15 @@ version = "1.4.1+0"
 # ╟─7761f3c0-2400-11ed-22b2-eb6df2afeebe
 # ╟─e4130ffa-ce5b-4d3d-b128-273512320119
 # ╟─08a4f848-c78c-4599-8a41-331c7f7f28f3
+# ╟─ae6deae3-62bf-438b-9d8f-b82066b99753
+# ╟─d2e3d403-7761-4729-a790-50a44d909ee2
 # ╟─474c6c47-d85d-4d4a-bdda-24b6e7cb4f09
-# ╠═1e7bc0ee-be57-4694-b1d4-59694e5bd710
-# ╠═ff887fc4-ae82-4028-b587-06e7ac5d116f
+# ╟─1e7bc0ee-be57-4694-b1d4-59694e5bd710
+# ╟─ff887fc4-ae82-4028-b587-06e7ac5d116f
 # ╟─edb94aa5-ceb9-4568-b48f-7d3c2e4ef8ea
 # ╟─9d22a9fc-28b8-40da-b44a-f2c7e21033d8
 # ╟─bd1b9af8-f4b3-4570-8f8b-cb21af18e7d8
+# ╟─1457b0a0-1dcf-4da6-b7ad-bb34e75b9d7d
 # ╟─0fa044a7-a960-4ec6-a474-3d2386f2b26c
 # ╟─d140903b-9085-49e5-bc7c-47f0df720077
 # ╟─92165285-a839-43ce-b30a-cd7a61b294b5
@@ -2612,7 +2851,16 @@ version = "1.4.1+0"
 # ╟─8e95a16d-0316-48c7-88c2-47b704d2da2a
 # ╟─6c44b63d-07cc-44a9-a545-1762a6a0f591
 # ╟─83da243c-a370-4986-9690-2f7ad8246058
+# ╟─4c3fce68-cad4-4a52-8e21-f671742e1659
+# ╟─ad8113d2-206a-4e08-95f0-087f2459eff4
+# ╟─220c7295-ef8f-4134-b862-16683380b7dc
+# ╟─87cf20bd-fa9f-495a-84b5-db158fc1b934
+# ╟─aa58b4d1-3c61-46d6-bfd5-816ea278880d
 # ╟─d306b8cb-dcb5-4e28-a8a4-71e4ad3cd2f2
 # ╟─495fa823-c52f-47e5-b4e5-2cd9a9611692
+# ╟─0005f781-71c4-4ece-a389-4bee95e519e2
+# ╟─ee71e55b-74a1-405e-9879-d571c57251d2
+# ╟─40466ea0-29ab-44db-820d-0046c2ca5be4
+# ╟─7fe71e38-2cea-4738-83c7-422fbbdea3fc
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
