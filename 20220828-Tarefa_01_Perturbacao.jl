@@ -189,7 +189,7 @@ end
 # ╔═╡ 12ffb3e1-2ef5-49c8-9221-33d3c7e60f5c
 if escolha == "Delta"
 	md"""	
-	$(@bind δ₁ Slider(-0.0001:0.000001:-0.0001; default = 0.0))
+	$(@bind δ₁ Slider(-1.0:0.000001:1.0; default = 0.0))
 	"""
 else
 	δ₁ = rand(X)
@@ -436,7 +436,7 @@ md"""
 
 # ╔═╡ 02ce9a38-133c-45c8-a73f-d1a271f0ce85
 if tipo == "3"
-	@bind z Slider(-10.0:0.01:10.0; default = 0.0)
+	@bind z Slider(-10.0:0.1:10.0; default = 0.0)
 end
 
 # ╔═╡ f1e3f845-9f3c-48fd-b9f7-4c418e12d1bf
@@ -547,6 +547,9 @@ D = Uniform(-n, n)
 
 # ╔═╡ ff887fc4-ae82-4028-b587-06e7ac5d116f
 𝒜₃ₓ₃ = Matrix{Float64}[]
+
+# ╔═╡ bf97ddbf-ba69-489b-9ead-7a7090f2d351
+𝒜₃ₓ₃[1]
 
 # ╔═╡ edb94aa5-ceb9-4568-b48f-7d3c2e4ef8ea
 function κ(A::Matrix, p::Int64 = 2)
@@ -676,15 +679,19 @@ begin
 		C = A + E
 		f = gerar_vetor_f(semente, parse(Int64, tipo))
 	elseif tipo == "2"
-		A = 𝒜₂ₓ₂[idx].Matriz
-		A⁻¹ = 𝒜₂ₓ₂[idx].Inversa
+		#A = 𝒜₂ₓ₂[idx].Matriz
+		A = 𝒜₂ₓ₂[idx]
+		#A⁻¹ = 𝒜₂ₓ₂[idx].Inversa
+		A⁻¹ = inv(A)
 		y = gerar_vetor_y(semente, parse(Int64, tipo), D)
 		E = gerar_matriz_E(semente, parse(Int64, tipo))
 		C = A + E
 		f = gerar_vetor_f(semente, parse(Int64, tipo))
 	elseif tipo == "3"
-		A = 𝒜₃ₓ₃[idx].Matriz
-		A⁻¹ = 𝒜₃ₓ₃[idx].Inversa
+		#A = 𝒜₃ₓ₃[idx].Matriz
+		A = 𝒜₃ₓ₃[idx]
+		#A⁻¹ = 𝒜₃ₓ₃[idx].Inversa
+		A⁻¹ = inv(A)
 		y = gerar_vetor_y(semente, parse(Int64, tipo), D)
 		E = gerar_matriz_E(semente, parse(Int64, tipo))
 		C = A + E
@@ -722,7 +729,7 @@ latexify(inv(C))
 
 # ╔═╡ 91d8d9dc-a2b8-43ac-9333-459e0d2ead08
 md"""
-com norma $(norm(inv(C), p)).
+com norma $(norm(inv(C), p)). Logo, o valor de ``\kappa(C)`` é $(norm(C, p) * norm(inv(C), p)).
 """
 
 # ╔═╡ 84e75013-9b15-4ec7-adaa-65068f91e6dc
@@ -736,17 +743,15 @@ begin
 	resultado = teste(A, E, y, f)
 	resposta_1 = resultado.Premissa ? "é verdadeira" : "é falsa"
 	resposta_2 = resultado.Conclusão ? "é verdadeira" : "é falsa"
+	resposta_3 = resultado.Premissa ? "menor" : "maior"
 	md""" 
-	A premissa $(resposta_1), pois temos que $(norm(inv(A), p) * norm(E, p)) é maior que ``\frac{1}{2}``.
+	A premissa $(resposta_1), pois temos que $(norm(inv(A), p) * norm(E, p)) é $(resposta_3) que ``\frac{1}{2}``.
 
 	O ``\varepsilon_{A}`` ficou em $(resultado.Erro_E), ao passo que ``\varepsilon_{y}`` ficou em $(resultado.Erro_f).
 
 	Assim, temos que a conclusão $(resposta_2).
 	""" 
 end
-
-# ╔═╡ 3cd2900d-47a0-42d3-86a3-4a3dacd13c66
-εᵣ(A, y, E, f)
 
 # ╔═╡ 118a1be6-b452-4c58-8526-1f5e191bfb18
 begin
@@ -1124,6 +1129,9 @@ push!(𝒜₃ₓ₃, [1 0 2;-1 1 0; 0 0 -2])
 
 # ╔═╡ 7fe71e38-2cea-4738-83c7-422fbbdea3fc
 push!(𝒜₂ₓ₂, [4.38938847 0.44964575; 9.46649537 1.16076851])
+
+# ╔═╡ ae18fc83-281c-4f82-9b7c-975741a2a30c
+#8018183904884061511
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -2787,7 +2795,8 @@ version = "1.4.1+0"
 # ╟─90ce7acb-c505-4446-a4b7-2e0b2ec97fcc
 # ╟─7f40d9c7-24af-444b-bb52-cb949e1e6469
 # ╟─17a36546-fdfa-4c30-b7c3-bdfca12b535f
-# ╠═373c654a-2235-4e60-8829-e5a71c195235
+# ╟─bf97ddbf-ba69-489b-9ead-7a7090f2d351
+# ╟─373c654a-2235-4e60-8829-e5a71c195235
 # ╟─11ad4cb3-2283-4841-b3cf-5cf3a09b021e
 # ╟─1df4c1a9-82c8-472f-bcb6-411647ddd5a7
 # ╟─4117fc01-cd79-437d-9ee0-72f434ae8a5c
@@ -2805,7 +2814,6 @@ version = "1.4.1+0"
 # ╟─e7065240-5ad1-4bde-b314-174c507d2bce
 # ╟─0768a5a9-4bba-4346-9e67-4f4e2f317d32
 # ╟─955a66a1-dbe2-4b12-b97f-6c81819c3b43
-# ╟─3cd2900d-47a0-42d3-86a3-4a3dacd13c66
 # ╟─550ed7aa-8117-4d22-b9e7-c0e7ece53307
 # ╟─8603ae6e-41e5-4eb8-b98d-754ad6ff7e0c
 # ╟─c4819792-615a-4a56-acb1-a3ffd4392558
@@ -2862,5 +2870,6 @@ version = "1.4.1+0"
 # ╟─ee71e55b-74a1-405e-9879-d571c57251d2
 # ╟─40466ea0-29ab-44db-820d-0046c2ca5be4
 # ╟─7fe71e38-2cea-4738-83c7-422fbbdea3fc
+# ╟─ae18fc83-281c-4f82-9b7c-975741a2a30c
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
