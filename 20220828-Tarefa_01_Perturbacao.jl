@@ -705,7 +705,7 @@ latexify(A)
 
 # ╔═╡ 4117fc01-cd79-437d-9ee0-72f434ae8a5c
 md"""
-tem norma $(norm(A), p). A sua inversa é dada por
+tem norma $(norm(A, p)). A sua inversa é dada por
 """
 
 # ╔═╡ 76070ba3-a40b-4be6-807e-4d4932783bad
