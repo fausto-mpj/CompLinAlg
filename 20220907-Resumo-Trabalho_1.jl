@@ -60,9 +60,6 @@ Caso a matriz `A` seja do tipo `SparseMatrixCSC`, a função `lu` utilizará o p
 Caso a matriz `A` seja do tipo `SymTridiagonal`, então a função `ldlt` ([link](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#LinearAlgebra.ldlt)) é preferível. Idem se `A` for do tipo `SparseMatrixCSC`, mas for Tridiagonal Simétrica Real. Ao contrário da `lu`, a `ldlt` não emprega pivoteamento. Para empregar pivoteamento, é necessário utilizar a `bunchkaufman` ([link](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#LinearAlgebra.bunchkaufman)).
 """
 
-# ╔═╡ 4527ebe7-ca27-4984-adf4-a2657484a2fe
-
-
 # ╔═╡ 34cb6c79-e229-4f99-b317-ee05c111bc65
 md"""
 ### 3. Fatoração Cholesky
@@ -488,6 +485,109 @@ begin
 	matrixNames = reduce(vcat, matrixNames[1].rows[2:end,:])
 end
 
+# ╔═╡ 3b368ea0-f175-4332-93b8-a92a93777c12
+function findmaxabs(A)
+    max = 0
+    maxidx = 0
+    for n in eachindex(A)
+        a = A[n]
+        if abs(a) > max
+            max = a
+            maxidx = n
+        end
+    end
+    return (max, maxidx)
+end
+
+# ╔═╡ 9109749e-0549-4c67-8e47-c44efb25834f
+function swap_row(A::AbstractMatrix, row1, row2)
+    n = size(A, 2)
+    for k = 1:n
+        A[row1, k], A[row2, k] = A[row2, k], A[row1, k]
+    end
+end
+
+# ╔═╡ 4527ebe7-ca27-4984-adf4-a2657484a2fe
+# LU: Com Pivoteamento Parcial (Ipsen, p. 59)
+function nosso_lu_parcial(A::AbstractMatrix)
+    Mₙ = copy(A)
+    n = size(Mₙ, 1) == size(Mₙ, 2) ? size(Mₙ, 1) : error("Erro: A matriz não é quadrada.")
+    if n == 1
+        return 1, Mₙ, 1
+    end
+
+    α, i = findmaxabs(Mₙ[:, 1])
+    Pₙ = Matrix(1.0I, n, n)
+    swap_row(Pₙ, 1, i)
+
+    d = (Pₙ*Mₙ)[2:n, 1]
+    a = transpose((Pₙ*Mₙ)[1, 2:n])
+    Mₙ₋₁ = (Pₙ*Mₙ)[1:end.!=1, 1:end.!=1]
+
+    l = d / α
+    S = Mₙ₋₁ - (l * a)
+
+    Lₙ₋₁, Uₙ₋₁, Pₙ₋₁ = nosso_lu(S)
+    L = [1 transpose(zeros(n - 1)); Pₙ₋₁*l Lₙ₋₁]
+    U = [α a; zeros(n - 1) Uₙ₋₁]
+    P = [1 transpose(zeros(n - 1)); zeros(n - 1) Pₙ₋₁] * Pₙ
+    return (L, U, P)
+
+end
+
+
+# ╔═╡ afeb3ca8-393b-4012-8481-9ee30f3dde57
+function swap_column(A::AbstractMatrix, col1, col2)
+    n = size(A, 1)
+    for k = 1:n
+        A[k, col1], A[k, col2] = A[k, col2], A[k, col1]
+    end
+end
+
+# ╔═╡ d870af79-408f-4ac0-ae99-f22bf7dd4f71
+# LU: Com Pivoteamento Completo (Ipsen, p. 59)
+function nosso_lu_complete(A::AbstractMatrix)
+    Mₙ = copy(A)
+    n = size(Mₙ, 1) == size(Mₙ, 2) ? size(Mₙ, 1) : error("Erro: A matriz não é quadrada.")
+    if n == 1
+        return 1, Mₙ, 1
+    end
+	
+    α, i = findmaxabs(Mₙ[:, 1])
+    β, j = findmaxabs(Mₙ[1, :])
+	
+    Pₙ = Matrix(1.0I, n, n)
+	if abs(α) > abs(β)
+    	swap_row(Pₙ, 1, i)
+		
+	    d = (Pₙ*Mₙ)[2:n, 1]
+	    a = transpose((Pₙ*Mₙ)[1, 2:n])
+	    Mₙ₋₁ = (Pₙ*Mₙ)[1:end.!=1, 1:end.!=1]
+		
+	    l = d / α
+	    S = Mₙ₋₁ - (l * a)
+	    Lₙ₋₁, Uₙ₋₁, Pₙ₋₁ = nosso_lu(S)
+	    L = [1 transpose(zeros(n - 1)); Pₙ₋₁*l Lₙ₋₁]
+	    U = [α a; zeros(n - 1) Uₙ₋₁]
+	    P = [1 transpose(zeros(n - 1)); zeros(n - 1) Pₙ₋₁] * Pₙ
+    	return (L, U, P)
+	else
+		swap_column(Pₙ, 1, j)
+		
+	    d = (Pₙ*Mₙ)[2:n, 1]
+	    a = transpose((Pₙ*Mₙ)[1, 2:n])
+	    Mₙ₋₁ = (Pₙ*Mₙ)[1:end.!=1, 1:end.!=1]
+		
+	    l = a / β
+	    S = Mₙ₋₁ - (d * l)
+	    Lₙ₋₁, Uₙ₋₁, Pₙ₋₁ = nosso_lu(S)
+	    L = [1 transpose(zeros(n - 1)); d Lₙ₋₁]
+	    U = [β Pₙ₋₁*l; zeros(n - 1) Uₙ₋₁]
+	    P = [1 transpose(zeros(n - 1)); zeros(n - 1) Pₙ₋₁] * Pₙ
+    	return (L, U, P)
+	end
+end
+
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
 [deps]
@@ -516,7 +616,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.1"
 manifest_format = "2.0"
-project_hash = "b3e9873621b088a308250ab49da88ec6b3ab018a"
+project_hash = "9a44a1aba917bce2346b9e42ac2ff4c2f96a01e4"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -1811,6 +1911,7 @@ version = "1.4.1+0"
 # ╟─5f67875f-2b68-4496-b884-1358867ac1bc
 # ╟─4ffc1cac-1052-403d-8005-f791c4016f6c
 # ╠═4527ebe7-ca27-4984-adf4-a2657484a2fe
+# ╠═d870af79-408f-4ac0-ae99-f22bf7dd4f71
 # ╟─34cb6c79-e229-4f99-b317-ee05c111bc65
 # ╠═aef244b7-2a43-4579-b01a-7d4a8de6baf0
 # ╠═52230551-a91f-4944-a743-de61287c14a7
@@ -1852,8 +1953,11 @@ version = "1.4.1+0"
 # ╠═2cd14daa-02f8-4ed4-b09f-a06a45c72733
 # ╟─d44b4551-abc7-4a71-b6d0-fe3d799b3600
 # ╟─a370ce9d-68e2-4868-a8f2-255cfcf230ac
-# ╟─77d86d27-5480-48be-842d-5534a98d6b02
-# ╟─2aa298ef-a685-4435-be41-b5e18cf47ecf
-# ╟─53284cd0-8612-44f5-a447-a7f8fe5a97e0
+# ╠═77d86d27-5480-48be-842d-5534a98d6b02
+# ╠═2aa298ef-a685-4435-be41-b5e18cf47ecf
+# ╠═53284cd0-8612-44f5-a447-a7f8fe5a97e0
+# ╠═3b368ea0-f175-4332-93b8-a92a93777c12
+# ╠═9109749e-0549-4c67-8e47-c44efb25834f
+# ╠═afeb3ca8-393b-4012-8481-9ee30f3dde57
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
