@@ -995,7 +995,7 @@ PlutoUI = "~0.7.39"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.8.0"
+julia_version = "1.8.1"
 manifest_format = "2.0"
 project_hash = "b59af5353a10e14c75b5e0dd09fee64c754c7357"
 
@@ -1478,9 +1478,9 @@ version = "1.2.1"
 
 [[deps.ImageMagick_jll]]
 deps = ["Artifacts", "Ghostscript_jll", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Libtiff_jll", "Pkg", "Zlib_jll", "libpng_jll"]
-git-tree-sha1 = "f025b79883f361fa1bd80ad132773161d231fd9f"
+git-tree-sha1 = "124626988534986113cfd876e3093e4a03890f58"
 uuid = "c73af94c-d91f-53ed-93a7-00f77d67a9d7"
-version = "6.9.12+2"
+version = "6.9.12+3"
 
 [[deps.ImageMetadata]]
 deps = ["AxisArrays", "ImageAxes", "ImageBase", "ImageCore"]
@@ -2588,7 +2588,7 @@ version = "1.4.1+0"
 # ╟─73be9692-8409-4824-a6e6-ff87e1a43ba8
 # ╟─fbb7f2bf-39a5-417c-9c2e-5f1f50867ce0
 # ╟─ea60c1c8-44c1-4839-9326-9473668c4e5a
-# ╟─4fd2f8ad-1c73-4847-99dd-650eb835771f
+# ╠═4fd2f8ad-1c73-4847-99dd-650eb835771f
 # ╠═6c9ee07e-fb5e-48d5-8a3a-1c52f1a3ef6f
 # ╟─71311caa-e62e-46ba-9997-353f0cef5129
 # ╟─2b888dd6-2b82-4551-af00-04293818acd9
@@ -2596,7 +2596,7 @@ version = "1.4.1+0"
 # ╟─a06b0c67-1b26-417d-b714-5debd25844f1
 # ╟─acd3ccb2-55c1-49fd-9968-ba05a74c09a4
 # ╟─96b7f4e7-5305-4a56-847f-d8c879514cdd
-# ╟─7761f3c0-2400-11ed-22b2-eb6df2afeebe
+# ╠═7761f3c0-2400-11ed-22b2-eb6df2afeebe
 # ╟─e4130ffa-ce5b-4d3d-b128-273512320119
 # ╟─08a4f848-c78c-4599-8a41-331c7f7f28f3
 # ╟─474c6c47-d85d-4d4a-bdda-24b6e7cb4f09
