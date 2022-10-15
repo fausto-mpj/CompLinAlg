@@ -471,8 +471,7 @@ md"""
 
 # ╔═╡ 77d86d27-5480-48be-842d-5534a98d6b02
 begin
-	MatrixDepot.loadinfo(mm(:))
-	MatrixDepot.load((sp(:) | mm(:)) & @pred(n == m & n ≤ 1000))
+	MatrixDepot.load(sp(:) & @pred(n == m & n ≤ 1000))
 	nothing
 end
 
@@ -481,7 +480,7 @@ MatrixDepot.data_dir()
 
 # ╔═╡ 53284cd0-8612-44f5-a447-a7f8fe5a97e0
 begin
-	matrixNames = listnames((sp(:) | mm(:)) & @pred(n == m & n ≤ 1000))
+	matrixNames = listnames(sp(:) & @pred(n == m & n ≤ 1000))
 	matrixNames = reduce(vcat, matrixNames[1].rows[2:end,:])
 end
 
